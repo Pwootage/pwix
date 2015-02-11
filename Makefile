@@ -2,9 +2,11 @@ PREFIX=arm-none-eabi-
 CC=${PREFIX}gcc
 CXX=${PREFIX}g++
 OBJCOPY=${PREFIX}objcopy
+OBJDUMP=${PREFIX}objdump
 AS=${PREFIX}as
 ld=${PREFIX}ld
-CCFLAGS=-ffreestanding -O2 -nostdlib -Iinclude
+DEBUG=-g
+CCFLAGS=-ffreestanding -O2 -nostdlib -Iinclude --std=gnu99 ${DEBUG}
 LIBS=-lgcc
 BIN=bin
 SRC=src
@@ -14,7 +16,10 @@ SRC_C_FILES=$(wildcard src/*.c)
 SRC_O_FILES=$(patsubst %.s,%.o,$(SRC_S_FILES)) $(patsubst %.c,%.o,$(SRC_C_FILES))
 BIN_O_FILES=$(patsubst src/%,bin/%,$(SRC_O_FILES))
 
-all: ${BIN} ${BIN}/raspi.bin
+all: ${BIN} ${BIN}/raspi.bin decompile
+
+decompile: ${BIN}/raspi.elf
+	${OBJDUMP} -d bin/raspi.elf > bin/raspi.elf.s
 
 ${BIN}:
 	mkdir $@

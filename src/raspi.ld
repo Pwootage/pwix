@@ -7,6 +7,7 @@ SECTIONS
     .text :
     {
         __start = .;
+        bin/boot.o(.text)
         *(.text)
         __text_end = .;
     }
