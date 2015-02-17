@@ -16,7 +16,7 @@ SRC_C_FILES=$(wildcard src/*.c)
 SRC_O_FILES=$(patsubst %.s,%.o,$(SRC_S_FILES)) $(patsubst %.c,%.o,$(SRC_C_FILES))
 BIN_O_FILES=$(patsubst src/%,bin/%,$(SRC_O_FILES))
 
-all: ${BIN} ${BIN}/raspi.bin decompile
+all: ${BIN} ${BIN}/kernel.img decompile
 
 decompile: ${BIN}/raspi.elf
 	${OBJDUMP} -d bin/raspi.elf > bin/raspi.elf.s
@@ -35,6 +35,9 @@ ${BIN}/raspi.elf: ${BIN_O_FILES}
 
 ${BIN}/raspi.bin: ${BIN}/raspi.elf
 	${OBJCOPY} ${BIN}/raspi.elf -O binary ${BIN}/raspi.bin
+
+${BIN}/kernel.img: ${BIN}/raspi.bin
+	cp -v $< $@
 
 .PHONY: clean
 

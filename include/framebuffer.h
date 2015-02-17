@@ -16,7 +16,7 @@ typedef struct {
   uint32_t fbSize;
 } FBConfig;
 
-//__asm__(".align 2");
-extern FBConfig FRAMEBUFFER_CONFIG;
+extern FBConfig fb_config;
+FBConfig* FRAMEBUFFER_CONFIG;
 
 #endif

@@ -6,7 +6,7 @@
 #include "framebuffer.h"
 
 void framebuffer_init() {
-  FBConfig* FRAMEBUFFER_CONFIG = (FBConfig*)0x40000;
+  FRAMEBUFFER_CONFIG = &fb_config;
   //Setup fb config
   FRAMEBUFFER_CONFIG->physicalWidth = 640;
   FRAMEBUFFER_CONFIG->physicalHeight = 480;
@@ -25,7 +25,7 @@ void framebuffer_init() {
   uint32_t* mailbox_sr = mailbox_base + 6; //ptr math = 0x18 bytes
   while (read32(mailbox_sr) & 0x80000000) {} //Wait for room in mailbox
   uint32_t* mailbox_wr = mailbox_base + 8; //ptr math = 0x20 bytes
-  write32(mailbox_wr, 0x40040001); //write to mailbox
+  write32(mailbox_wr, 0x40000001 + (uint32_t)FRAMEBUFFER_CONFIG); //write to mailbox
 
   //Now we need to wait for mailbox to be read...
   while (true) {
@@ -38,9 +38,9 @@ void framebuffer_init() {
   //FB should be ready!
   uint8_t* fb = FRAMEBUFFER_CONFIG->fbPtr - 0x40000000;
   for (int i = 0; i < 640 * 480; i++) {
-    fb[i*4+0] = (uint8_t)(i >> 0);
-    fb[i*4+1] = (uint8_t)(i >> 8);
-    fb[i*4+2] = (uint8_t)(i >> 16);
+    fb[i*4+0] = 255;
+    fb[i*4+1] = 0;
+    fb[i*4+2] = 255;
     fb[i*4+3] = 0; //Ignored?
   }
 }
